@@ -87,16 +87,28 @@ WSGI_APPLICATION = 'blogging_platform.wsgi.application'
 
 from decouple import config
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': config('DB_NAME'),
+#         'USER': config('DB_USER'),
+#         'PASSWORD': config('DB_PASSWORD'),
+#         # 'HOST': 'localhost',
+#         'HOST': config('DB_HOST'),  # Render provides it
+#         'PORT': config('DB_PORT'),
+#     }
+# }
+
+import dj_database_url
+import os
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': config('DB_NAME'),
-        'USER': config('DB_USER'),
-        'PASSWORD': config('DB_PASSWORD'),
-        # 'HOST': 'localhost',
-        'HOST': config('DB_HOST'),  # Render provides it
-        'PORT': config('DB_PORT'),
-    }
+    'default': dj_database_url.config(
+        # Yeh line automatically Render ke 'DATABASE_URL'
+        # environment variable se connect kar legi.
+        conn_max_age=600,
+        conn_health_checks=True,
+    )
 }
 
 AUTH_USER_MODEL = 'blog.CustomUser'
