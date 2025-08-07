@@ -291,10 +291,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'blogging_platform.wsgi.application'
 
-# Database
+
 DATABASES = {
     'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}", # Fallback for local dev
+        # Yeh line automatically Render ke 'DATABASE_URL'
+        # environment variable se connect kar legi.
         conn_max_age=600,
         conn_health_checks=True,
     )
