@@ -258,6 +258,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'corsheaders',
     'blog',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -297,6 +298,7 @@ WSGI_APPLICATION = 'blogging_platform.wsgi.application'
 import os
 import dj_database_url
 from dotenv import load_dotenv
+from django.core.exceptions import ImproperlyConfigured
 
 load_dotenv()  # Load .env variables
 
