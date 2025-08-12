@@ -240,10 +240,11 @@ SECRET_KEY = config("SECRET_KEY")
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # This will automatically add your Render backend URL to the allowed hosts
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
 if RENDER_EXTERNAL_HOSTNAME:
     ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -280,7 +281,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.django',
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -289,17 +290,18 @@ TEMPLATES = [
     },
 ]
 
+
 WSGI_APPLICATION = 'blogging_platform.wsgi.application'
 
 
 DATABASES = {
     'default': dj_database_url.config(
-        # Yeh line automatically Render ke 'DATABASE_URL'
-        # environment variable se connect kar legi.
+        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
         conn_max_age=600,
         conn_health_checks=True,
     )
 }
+
 
 # Custom User Model and Authentication
 AUTH_USER_MODEL = 'blog.CustomUser'
@@ -370,3 +372,31 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:5173",             # Your local frontend for testing
 ]
 CSRF_TRUSTED_ORIGINS = ['https://blog-backend-lp8a.onrender.com'] # Your deployed backend
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO', # Change to 'DEBUG' for even more detail
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console'],
+            'level': 'DEBUG', # This will log all database queries
+            'propagate': False,
+        },
+    },
+}

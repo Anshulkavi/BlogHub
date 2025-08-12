@@ -10,6 +10,9 @@ from .serializers import (RegisterSerializer, ProfileSerializer,
                           LikeSerializer, CategorySerializer, TagSerializer)
 from .models import Category,Post,Comment,Like,Tag
 from rest_framework_simplejwt.tokens import RefreshToken
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class RegisterView(APIView):
@@ -108,23 +111,40 @@ class PostListCreateView(generics.ListCreateAPIView):
         print("POST /api/posts/ Error:", serializer.errors)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Post.objects.all()
-    serializer_class = PostSerializer
-    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+# class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
+#     queryset = Post.objects.all()
+#     serializer_class = PostSerializer
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
+#     def update(self, request, *args, **kwargs):
+#         post = self.get_object()
+#         if request.user != post.author:
+#             raise permissions.PermissionDenied("You can only edit your own posts.")
+#         return super().update(request, *args, **kwargs)
+
+#     def destroy(self, request, *args, **kwargs):
+#         post = self.get_object()
+#         if request.user != post.author:
+#             raise permissions.PermissionDenied("You can only delete your own posts.")
+#         return super().destroy(request, *args, **kwargs)
+
+class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
+    # ...
     def update(self, request, *args, **kwargs):
         post = self.get_object()
         if request.user != post.author:
+            # Log an info message
+            logger.info(f"User {request.user} tried to edit post by {post.author}")
             raise permissions.PermissionDenied("You can only edit your own posts.")
-        return super().update(request, *args, **kwargs)
-
-    def destroy(self, request, *args, **kwargs):
-        post = self.get_object()
-        if request.user != post.author:
-            raise permissions.PermissionDenied("You can only delete your own posts.")
-        return super().destroy(request, *args, **kwargs)
-
+        
+        try:
+            # Some code that might fail, e.g., processing an image
+            return super().update(request, *args, **kwargs)
+        except Exception as e:
+            # Log the full error message if something goes wrong
+            logger.error(f"An error occurred while updating post {post.id}: {e}")
+            # Re-raise the exception or return an error response
+            raise
 
 class CategoryListCreateView(generics.ListCreateAPIView):
     queryset = Category.objects.all()
