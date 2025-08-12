@@ -294,13 +294,22 @@ TEMPLATES = [
 WSGI_APPLICATION = 'blogging_platform.wsgi.application'
 
 
+import os
+import dj_database_url
+from dotenv import load_dotenv
+
+load_dotenv()  # Load .env variables
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if not DATABASE_URL:
+    raise ImproperlyConfigured("DATABASE_URL not found. Please set it in .env")
+
 DATABASES = {
-    'default': dj_database_url.config(
-        default=f"sqlite:///{BASE_DIR / 'db.sqlite3'}",
-        conn_max_age=600,
-        conn_health_checks=True,
-    )
+    'default': dj_database_url.parse(DATABASE_URL, conn_max_age=600)
 }
+
+
 
 
 # Custom User Model and Authentication
