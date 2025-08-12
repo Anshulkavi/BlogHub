@@ -132,7 +132,7 @@ class PostDetailView(generics.RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()  # <-- ADD THIS LINE
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
-    
+
     def update(self, request, *args, **kwargs):
         post = self.get_object()
         if request.user != post.author:
