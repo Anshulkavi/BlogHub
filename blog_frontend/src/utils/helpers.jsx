@@ -83,3 +83,14 @@ export const getInitials = (name) => {
   if (!name) return '';
   return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
 };
+
+export const getCloudinaryUrl = (publicId) => {
+  const cloudName = import.meta.env.VITE_CLOUD_NAME;
+  if (!cloudName) {
+    console.warn("Cloudinary cloud name is undefined!");
+    return '';
+  }
+  if (!publicId) return '';
+  if (publicId.startsWith('http')) return publicId;
+  return `https://res.cloudinary.com/${cloudName}/image/upload/${publicId}`;
+};

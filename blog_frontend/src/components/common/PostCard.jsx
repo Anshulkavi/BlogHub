@@ -1,18 +1,18 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Heart, User, Calendar, Tag } from "lucide-react";
-import { formatDate } from "../../utils/helpers";
+import { formatDate,getCloudinaryUrl } from "../../utils/helpers";
 
 const PostCard = ({ post, onLike, onTagClick, user }) => {
   return (
     <article className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
-      {post.featured_image && (
-        <img
-          src={post.featured_image}
-          alt={post.title}
-          className="w-full h-48 object-cover"
-        />
-      )}
+      {post.featured_image && getCloudinaryUrl(post.featured_image) && (
+  <img
+    src={getCloudinaryUrl(post.featured_image)}
+    alt={post.title}
+    className="w-full h-auto max-h-[500px] object-cover rounded-xl mb-8 shadow-lg"
+  />
+)}
 
       <div className="p-6">
         <div className="flex items-center justify-between mb-4">

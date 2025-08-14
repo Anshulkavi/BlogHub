@@ -29,19 +29,21 @@ export const postsAPI = {
     return response.data;
   },
 
-  updatePost: async (id, postData) => {
-    const isFormData = postData instanceof FormData;
+updatePost: async (id, postData, token) => {
+  const isFormData = postData instanceof FormData;
 
-    const response = await api.patch(`/posts/${id}/`, postData, {
-      headers: {
-        ...(isFormData
-          ? { "Content-Type": "multipart/form-data" }
-          : { "Content-Type": "application/json" }),
-      },
-    });
+  const response = await api.patch(`/posts/${id}/`, postData, {
+    headers: {
+      Authorization: `Bearer ${token}`, // ✅ add this
+      ...(isFormData
+        ? { "Content-Type": "multipart/form-data" }
+        : { "Content-Type": "application/json" }),
+    },
+  });
 
-    return response.data;
-  },
+  return response.data;
+},
+
 
   deletePost: async (id) => {
     await api.delete(`/posts/${id}/`);
