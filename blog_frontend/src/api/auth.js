@@ -20,13 +20,11 @@ export const authAPI = {
 
   updateProfile: async (userData) => {
   const formData = new FormData();
-
   Object.keys(userData).forEach((key) => {
     if (userData[key] !== null && userData[key] !== undefined) {
       formData.append(key, userData[key]);
     }
   });
-
   const response = await api.patch('/profile/', formData, {
     headers: { 'Content-Type': 'multipart/form-data' },
   });

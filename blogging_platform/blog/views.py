@@ -11,6 +11,8 @@ from .serializers import (RegisterSerializer, ProfileSerializer,
 from .models import Category,Post,Comment,Like,Tag
 from rest_framework_simplejwt.tokens import RefreshToken
 import logging
+from django.db.models import Count
+
 
 logger = logging.getLogger(__name__)
 
@@ -89,15 +91,49 @@ class UserPostListView(generics.ListAPIView):
         #Get user_id from the url
         user_id = self.kwargs['user_id']
         #Filter the posts by the author's ID
-        return Post.objects.filter(author__id=user_id).order_by('-created_at')
+        # return Post.objects.filter(author__id=user_id).order_by('-created_at')
+        return Post.objects.filter(author__id=user_id).select_related(
+            'author__profile', 'category'
+        ).prefetch_related('tags', 'like').order_by('-created_at')
+
+# class PostListCreateView(generics.ListCreateAPIView):
+#     # queryset = Post.objects.all().order_by('-created_at') # <--- Slower
+#     queryset = Post.objects.select_related('author__profile', 'category').prefetch_related('tags', 'like').order_by('-created_at') # <-- AFTER (Fast)
+
+#     serializer_class = PostSerializer
+#     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
+#     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
+#     filterset_fields = ['category__name', 'tags__name']
+#     search_fields = ['title', 'content']
+
+#     def perform_create(self, serializer):
+#         serializer.save(author=self.request.user)
 
 class PostListCreateView(generics.ListCreateAPIView):
-    queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
     filter_backends = [DjangoFilterBackend, filters.SearchFilter]
     filterset_fields = ['category__name', 'tags__name']
     search_fields = ['title', 'content']
+
+    # 2. Hum 'queryset' attribute ko 'get_queryset' method se replace karenge
+    def get_queryset(self):
+        # Base queryset wahi hai jo humne performance ke liye banaya tha
+        queryset = Post.objects.select_related('author__profile', 'category').prefetch_related('tags', 'like')
+
+        # 'likes_count' ko har post ke liye calculate (annotate) karein
+        queryset = queryset.annotate(likes_count=Count('like'))
+
+        # Frontend se 'ordering' parameter check karein
+        ordering_param = self.request.query_params.get('ordering', 'latest') # Default 'latest'
+
+        # Parameter ke hisab se sorting apply karein
+        if ordering_param == 'popular':
+            return queryset.order_by('-likes_count', '-created_at')
+        elif ordering_param == 'oldest':
+            return queryset.order_by('created_at')
+        else: # 'latest' aur default case
+            return queryset.order_by('-created_at')
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -179,7 +215,10 @@ class CategoryPostListView(generics.ListAPIView):
         # Get the category_slug from the URL
         category_slug = self.kwargs['category_slug']
         # Filter posts where the category's slug matches
-        return Post.objects.filter(category__slug=category_slug).order_by('-created_at')
+        # return Post.objects.filter(category__slug=category_slug).order_by('-created_at')
+        return Post.objects.filter(category__slug=category_slug).select_related(
+            'author__profile', 'category'
+        ).prefetch_related('tags', 'like').order_by('-created_at')
 
 
 class CommentListCreateView(generics.ListCreateAPIView):
@@ -188,13 +227,14 @@ class CommentListCreateView(generics.ListCreateAPIView):
 
     def get_queryset(self):
         post_id = self.kwargs['post_id']
-        # 👇 Yahan 'created_by' ki jagah 'created_at' hoga 👇
+        # Corrected to use the 'created_at' field
         return Comment.objects.filter(post__id=post_id).order_by('-created_at')
     
     def perform_create(self, serializer):
         post_id = self.kwargs['post_id']
         serializer.save(user=self.request.user, post_id=post_id)
 
+        
 class CommentDeleteView(generics.DestroyAPIView):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
@@ -202,10 +242,16 @@ class CommentDeleteView(generics.DestroyAPIView):
 
     def delete(self, request, *args, **kwargs):
         comment = self.get_object()
-        if comment.user != request.user:
-            raise permissions.PermissionDenied("You can only delete your own comments.")
-        return super().delete(request, *args, **kwargs)
-    
+        post_author = comment.post.author
+
+        # ✅ NEW LOGIC: Allow deletion if the user is the comment's author
+        # OR if the user is the post's author.
+        if comment.user == request.user or post_author == request.user:
+            return super().delete(request, *args, **kwargs)
+        
+        # If neither condition is met, deny permission.
+        raise permissions.PermissionDenied("You do not have permission to delete this comment.")
+  
 
 class LikeToggleView(APIView):
     permission_classes = [permissions.IsAuthenticated]

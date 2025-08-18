@@ -65,7 +65,7 @@ class PostSerializer(serializers.ModelSerializer):
         allow_null=True,
         required=False
     )
-    featured_image = serializers.ImageField(required=False, use_url=True)
+    featured_image = serializers.CharField(max_length=255, required=False, allow_null=True)
 
     # likes_count aur is_liked jaise custom fields add karein
     likes_count = serializers.SerializerMethodField()
@@ -91,13 +91,11 @@ class PostSerializer(serializers.ModelSerializer):
         return False
     
 class CommentSerializer(serializers.ModelSerializer):
-    user = serializers.StringRelatedField(read_only=True)
-
+    user_name = serializers.ReadOnlyField(source='user.profile.full_name')
+    user_id = serializers.ReadOnlyField(source='user.id')
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'user', 'content', 'created_at']
-        read_only_fields = ['id', 'user', 'created_at']
-
+        fields = ['id', 'content', 'created_at', 'user_id', 'user_name']
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:

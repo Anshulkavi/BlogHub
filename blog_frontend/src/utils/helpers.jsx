@@ -1,34 +1,3 @@
-// export const formatDate = (dateString) => {
-//   return new Date(dateString).toLocaleDateString('en-US', {
-//     year: 'numeric',
-//     month: 'short',
-//     day: 'numeric'
-//   });
-// };
-
-// export const formatDateLong = (dateString) => {
-//   return new Date(dateString).toLocaleDateString('en-US', {
-//     year: 'numeric',
-//     month: 'long',
-//     day: 'numeric'
-//   });
-// };
-
-// export const truncateText = (text, maxLength = 150) => {
-//   if (!text) return '';
-//   return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
-// };
-
-// export const validateEmail = (email) => {
-//   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-//   return re.test(email);
-// };
-
-// export const getInitials = (name) => {
-//   if (!name) return '';
-//   return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
-// };
-
 export const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('en-US', {
     year: 'numeric',
