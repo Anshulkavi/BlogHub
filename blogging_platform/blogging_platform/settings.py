@@ -46,10 +46,12 @@ INSTALLED_APPS = [
 # =========================
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    # Place WhiteNoise right after SecurityMiddleware
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    # Place CorsMiddleware right after WhiteNoise
     'corsheaders.middleware.CorsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # For serving static files in production
-    'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
@@ -167,12 +169,18 @@ SIMPLE_JWT = {
 # =========================
 # CORS & CSRF
 # =========================
-CORS_ALLOWED_ORIGINS = [
-    "https://bloghub-f3lc.onrender.com",  # Your deployed frontend
-    "http://localhost:5173",             # Local dev
-]
-CSRF_TRUSTED_ORIGINS = ['https://blog-backend-lp8a.onrender.com']
+# Read the frontend URL from an environment variable
+FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
 
+CORS_ALLOWED_ORIGINS = [
+    FRONTEND_URL,
+]
+# It's also good practice to add your frontend to CSRF_TRUSTED_ORIGINS
+CSRF_TRUSTED_ORIGINS = [
+    FRONTEND_URL,
+    # Also add your backend's URL here once it's deployed
+    # e.g., 'https://your-backend-name.onrender.com'
+]
 # =========================
 # Logging
 # =========================
