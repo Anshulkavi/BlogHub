@@ -37,12 +37,9 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 # Ek simple Profile serializer banayein jo author ke saath nest hoga
 class ProfileNestedSerializer(serializers.ModelSerializer):
-    profile_picture = serializers.CharField(max_length=255, required=False, allow_null=True)
-
     class Meta:
         model = Profile
         fields = ['full_name', 'profile_picture']
-
 
 # Ek simple User serializer banayein jo Profile ko nest karega
 class UserNestedSerializer(serializers.ModelSerializer):
