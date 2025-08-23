@@ -36,23 +36,12 @@ class ProfileSerializer(serializers.ModelSerializer):
 
 
 # Ek simple Profile serializer banayein jo author ke saath nest hoga
-# class ProfileNestedSerializer(serializers.ModelSerializer):
-#     class Meta:
-#         model = Profile
-#         fields = ['full_name', 'profile_picture']
-
 class ProfileNestedSerializer(serializers.ModelSerializer):
-    profile_picture = serializers.SerializerMethodField()
+    profile_picture = serializers.CharField(max_length=255, required=False, allow_null=True)
 
     class Meta:
         model = Profile
         fields = ['full_name', 'profile_picture']
-
-    def get_profile_picture(self, obj):
-        request = self.context.get('request')
-        if obj.profile_picture:
-            return request.build_absolute_uri(obj.profile_picture.url) if request else obj.profile_picture.url
-        return None
 
 
 # Ek simple User serializer banayein jo Profile ko nest karega
