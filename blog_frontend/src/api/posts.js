@@ -1,11 +1,23 @@
 import api from "./config";
 
 export const postsAPI = {
+
+  // getPosts: async (params = {}) => {
+  //   const queryParams = new URLSearchParams(params);
+  //   const response = await api.get(`/posts/?${queryParams}`);
+  //   return response.data;
+  // },
+
   getPosts: async (params = {}) => {
-    const queryParams = new URLSearchParams(params);
-    const response = await api.get(`/posts/?${queryParams}`);
-    return response.data;
-  },
+  const queryParams = new URLSearchParams(params);
+  const response = await api.get(`/posts/?${queryParams}`);
+  const data = response.data;
+
+  return Array.isArray(data)
+    ? data
+    : (data?.results && Array.isArray(data.results) ? data.results : []);
+},
+
 
   getPost: async (id) => {
     const response = await api.get(`/posts/${id}/`);
@@ -45,11 +57,11 @@ updatePost: async (id, postData) => {
   return response.data;
 },
 
-  getPostsByUser: async (userId) => {
-    // This calls the new endpoint we just created in Django
-    const response = await api.get(`/users/${userId}/posts/`);
-    return response.data;
-  },
+  // getPostsByUser: async (userId) => {
+  //   // This calls the new endpoint we just created in Django
+  //   const response = await api.get(`/users/${userId}/posts/`);
+  //   return response.data;
+  // },
 
 // updatePost: async (id, postData, token) => {
 //   const isFormData = postData instanceof FormData;
@@ -76,20 +88,29 @@ updatePost: async (id, postData) => {
     return response.data;
   },
 
-  getLikedPosts: async () => {
-    const response = await api.get("/posts/liked/");
-    return response.data;
-  },
+  // getLikedPosts: async () => {
+  //   const response = await api.get("/posts/liked/");
+  //   return response.data;
+  // },
 
+  // getCategories: async () => {
+  //   const response = await api.get("/categories/");
+  //   return response.data;
+  // },
   getCategories: async () => {
-    const response = await api.get("/categories/");
-    return response.data;
-  },
+  const response = await api.get("/categories/");
+  const data = response.data;
 
-  getPostsByCategorySlug: async (slug) => {
-    const response = await api.get(`/categories/${slug}/posts/`);
-    return response.data;
-  },
+  return Array.isArray(data)
+    ? data
+    : (data?.results && Array.isArray(data.results) ? data.results : []);
+},
+
+
+  // getPostsByCategorySlug: async (slug) => {
+  //   const response = await api.get(`/categories/${slug}/posts/`);
+  //   return response.data;
+  // },
 
   // getTags: async () => {
   //   const response = await api.get("/tags/");
@@ -122,6 +143,31 @@ updatePost: async (id, postData) => {
     const { data } = await api.delete(`/comments/${commentId}/delete/`);
     return data;
   },
+
+  getPostsByUser: async (userId) => {
+  const response = await api.get(`/users/${userId}/posts/`);
+  const data = response.data;
+  return Array.isArray(data)
+    ? data
+    : (data?.results && Array.isArray(data.results) ? data.results : []);
+},
+
+getPostsByCategorySlug: async (slug) => {
+  const response = await api.get(`/categories/${slug}/posts/`);
+  const data = response.data;
+  return Array.isArray(data)
+    ? data
+    : (data?.results && Array.isArray(data.results) ? data.results : []);
+},
+
+getLikedPosts: async () => {
+  const response = await api.get("/posts/liked/");
+  const data = response.data;
+  return Array.isArray(data)
+    ? data
+    : (data?.results && Array.isArray(data.results) ? data.results : []);
+},
+
 
 };
 
