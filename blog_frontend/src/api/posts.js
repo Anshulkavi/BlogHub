@@ -91,10 +91,21 @@ updatePost: async (id, postData) => {
     return response.data;
   },
 
+  // getTags: async () => {
+  //   const response = await api.get("/tags/");
+  //   return response.data;
+  // },
+
   getTags: async () => {
-    const response = await api.get("/tags/");
-    return response.data;
-  },
+  const response = await api.get("/tags/");
+  const data = response.data;
+
+  // normalize once here
+  return Array.isArray(data)
+    ? data
+    : (data?.results && Array.isArray(data.results) ? data.results : []);
+},
+
 
   getCommentsForPost: async (postId) => {
     const response = await api.get(`/posts/${postId}/comments/`);

@@ -412,8 +412,8 @@ const HomePage = () => {
   const fetchTags = async () => {
   try {
     const tagsData = await postsAPI.getTags();
-    const tagsArray = Array.isArray(tagsData) ? tagsData : tagsData.results || [];
-    setPopularTags(tagsArray.map(tag => tag.name));
+setPopularTags(tagsData.map(tag => tag.name));
+
   } catch (error) {
     console.error("Failed to fetch tags:", error);
   }
