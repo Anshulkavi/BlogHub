@@ -10,13 +10,15 @@ const TagInput = ({ value, onChange }) => {
   // Fetch all available tags when the component mounts
   useEffect(() => {
     const fetchTags = async () => {
-      try {
-        const tagsData = await postsAPI.getTags();
-        setAllTags(tagsData.map(tag => tag.name));
-      } catch (error) {
-        console.error("Failed to fetch tags:", error);
-      }
-    };
+  try {
+    const tagsData = await postsAPI.getTags();
+    const tagsArray = Array.isArray(tagsData) ? tagsData : tagsData.results || [];
+    setAllTags(tagsArray.map(tag => tag.name));
+  } catch (error) {
+    console.error("Failed to fetch tags:", error);
+  }
+};
+
     fetchTags();
   }, []);
 
