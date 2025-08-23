@@ -914,12 +914,12 @@ const PostDetailPage = () => {
   const featuredImageUrl = getImageUrl(post.featured_image);
 
   // Debug logging (remove in production)
-  console.log('Post data:', {
-    featured_image: post.featured_image,
-    featuredImageUrl,
-    authorProfilePic: post.author?.profile?.profile_picture,
-    authorProfilePicUrl
-  });
+  // console.log('Post data:', {
+  //   featured_image: post.featured_image,
+  //   featuredImageUrl,
+  //   authorProfilePic: post.author?.profile?.profile_picture,
+  //   authorProfilePicUrl
+  // });
 
   return (
     <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -939,11 +939,11 @@ const PostDetailPage = () => {
               src={authorProfilePicUrl}
               alt={authorName}
               className="w-12 h-12 rounded-full object-cover border-2 border-gray-200"
-              onError={() => {
-                console.error('Author image failed to load:', authorProfilePicUrl);
-                setAuthorImageError(true);
-              }}
-              onLoad={() => console.log('Author image loaded successfully')}
+              // onError={() => {
+              //   console.error('Author image failed to load:', authorProfilePicUrl);
+              //   setAuthorImageError(true);
+              // }}
+              // onLoad={() => console.log('Author image loaded successfully')}
             />
           ) : (
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-blue-400 to-purple-500 flex items-center justify-center">
@@ -1003,12 +1003,12 @@ const PostDetailPage = () => {
             alt={post.title}
             loading="lazy"
             className="w-full h-auto max-h-[500px] object-cover rounded-xl shadow-lg"
-            onError={(e) => {
-              console.error('Featured image failed to load:', featuredImageUrl);
-              console.error('Error details:', e);
-              setImageError(true);
-            }}
-            onLoad={() => console.log('Featured image loaded successfully:', featuredImageUrl)}
+            // onError={(e) => {
+            //   // console.error('Featured image failed to load:', featuredImageUrl);
+            //   // console.error('Error details:', e);
+            //   setImageError(true);
+            // }}
+            // onLoad={() => console.log('Featured image loaded successfully:', featuredImageUrl)}
           />
         </div>
       )}
