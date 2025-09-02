@@ -794,7 +794,7 @@ const PostDetailPage = () => {
       ]);
       setPost(postData);
       setComments(commentsData);
-      
+
       // Reset image error states when new post loads
       setImageError(false);
       setAuthorImageError(false);
@@ -808,24 +808,24 @@ const PostDetailPage = () => {
   // Enhanced image URL helper
   const getImageUrl = (imageValue) => {
     if (!imageValue) return null;
-    
+
     // If it's already a full URL, return as-is
-    if (typeof imageValue === 'string' && imageValue.startsWith('http')) {
+    if (typeof imageValue === "string" && imageValue.startsWith("http")) {
       return imageValue;
     }
-    
+
     // Try using the helper function
     const cloudinaryUrl = getCloudinaryUrl(imageValue);
     if (cloudinaryUrl && cloudinaryUrl !== imageValue) {
       return cloudinaryUrl;
     }
-    
+
     // If helper didn't work and we have a string, try constructing Cloudinary URL
-    if (typeof imageValue === 'string' && imageValue.length > 0) {
-      const cloudName = import.meta.env.VITE_CLOUD_NAME || 'dmruk1niu'; // fallback
+    if (typeof imageValue === "string" && imageValue.length > 0) {
+      const cloudName = import.meta.env.VITE_CLOUD_NAME || "dmruk1niu"; // fallback
       return `https://res.cloudinary.com/${cloudName}/image/upload/${imageValue}`;
     }
-    
+
     return null;
   };
 
@@ -910,8 +910,11 @@ const PostDetailPage = () => {
       </div>
     );
 
-  const authorName = post.author?.profile?.full_name || post.author?.full_name || "Anonymous";
-  const authorProfilePicUrl = getImageUrl(post.author?.profile?.profile_picture);
+  const authorName =
+    post.author?.profile?.full_name || post.author?.full_name || "Anonymous";
+  const authorProfilePicUrl = getImageUrl(
+    post.author?.profile?.profile_picture
+  );
   const featuredImageUrl = getImageUrl(post.featured_image);
 
   // Debug logging (remove in production)
@@ -1052,7 +1055,7 @@ const PostDetailPage = () => {
                 className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gray-100 text-gray-800"
               >
                 <Tag className="w-4 h-4 mr-2 text-gray-500" />
-                {typeof tag === 'object' ? tag.name : tag}
+                {typeof tag === "object" ? tag.name : tag}
               </span>
             ))}
           </div>
@@ -1141,50 +1144,50 @@ const PostDetailPage = () => {
           )}
         </div> */}
         <div className="space-y-6">
-  {Array.isArray(comments) && comments.length > 0 ? (
-    comments.map((comment) => {
-      const loggedInUserId = Number(user?.id); // force number
-      const isCommentAuthor = loggedInUserId === Number(comment.user_id);
-      const isPostAuthor = loggedInUserId === Number(post.author?.id);
-      const showDelete = user && (isCommentAuthor || isPostAuthor);
+          {Array.isArray(comments) && comments.length > 0 ? (
+            comments.map((comment) => {
+              const loggedInUserId = Number(user?.id); // force number
+              const isCommentAuthor =
+                loggedInUserId === Number(comment.user_id);
+              const isPostAuthor = loggedInUserId === Number(post.author?.id);
+              const showDelete = user && (isCommentAuthor || isPostAuthor);
 
-      return (
-        <div key={comment.id} className="flex space-x-4">
-          <div className="w-10 h-10 bg-gray-200 rounded-full flex-shrink-0 flex items-center justify-center">
-            <User className="w-5 h-5 text-gray-600" />
-          </div>
-          <div className="flex-grow">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-semibold">{comment.user_name}</p>
-                <p className="text-xs text-gray-500">
-                  {formatTimeAgo(comment.created_at)}
-                </p>
-              </div>
-              {showDelete && (
-                <button
-                  onClick={() => handleCommentDelete(comment.id)}
-                  title="Delete comment"
-                  className="text-gray-400 hover:text-red-600 transition-colors"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              )}
-            </div>
-            <p className="text-gray-700 mt-1 whitespace-pre-wrap">
-              {comment.content}
+              return (
+                <div key={comment.id} className="flex space-x-4">
+                  <div className="w-10 h-10 bg-gray-200 rounded-full flex-shrink-0 flex items-center justify-center">
+                    <User className="w-5 h-5 text-gray-600" />
+                  </div>
+                  <div className="flex-grow">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <p className="font-semibold">{comment.user_name}</p>
+                        <p className="text-xs text-gray-500">
+                          {formatTimeAgo(comment.created_at)}
+                        </p>
+                      </div>
+                      {showDelete && (
+                        <button
+                          onClick={() => handleCommentDelete(comment.id)}
+                          title="Delete comment"
+                          className="text-gray-400 hover:text-red-600 transition-colors"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                    <p className="text-gray-700 mt-1 whitespace-pre-wrap">
+                      {comment.content}
+                    </p>
+                  </div>
+                </div>
+              );
+            })
+          ) : (
+            <p className="text-gray-600">
+              No comments yet. Be the first to comment!
             </p>
-          </div>
+          )}
         </div>
-      );
-    })
-  ) : (
-    <p className="text-gray-600">
-      No comments yet. Be the first to comment!
-    </p>
-  )}
-</div>
-
       </div>
 
       <footer className="mt-12 pt-8 border-t border-gray-200">
@@ -1195,6 +1198,13 @@ const PostDetailPage = () => {
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to all posts
         </Link>
+
+        {/* ✅ New footer section */}
+        <div className="bg-gray-100 text-center py-4 mt-8 border-t">
+          <p className="text-gray-600 text-sm">
+            © {new Date().getFullYear()} blogHub. All rights reserved.
+          </p>
+        </div>
       </footer>
     </article>
   );
