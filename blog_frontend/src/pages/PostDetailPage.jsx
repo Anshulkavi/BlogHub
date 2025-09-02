@@ -858,6 +858,7 @@ const PostDetailPage = () => {
       await postsAPI.createComment(id, { content: newComment });
       setNewComment("");
       const commentsData = await postsAPI.getCommentsForPost(id);
+      console.log("Comments API response:", commentsData);
       setComments(commentsData);
     } catch (error) {
       console.error("Failed to post comment:", error);
@@ -1095,7 +1096,7 @@ const PostDetailPage = () => {
           </div>
         )}
 
-        <div className="space-y-6">
+        {/* <div className="space-y-6">
           {comments.length > 0 ? (
             comments.map((comment) => {
               const loggedInUserId = user?.id;
@@ -1138,7 +1139,52 @@ const PostDetailPage = () => {
               No comments yet. Be the first to comment!
             </p>
           )}
+        </div> */}
+        <div className="space-y-6">
+  {Array.isArray(comments) && comments.length > 0 ? (
+    comments.map((comment) => {
+      const loggedInUserId = Number(user?.id); // force number
+      const isCommentAuthor = loggedInUserId === Number(comment.user_id);
+      const isPostAuthor = loggedInUserId === Number(post.author?.id);
+      const showDelete = user && (isCommentAuthor || isPostAuthor);
+
+      return (
+        <div key={comment.id} className="flex space-x-4">
+          <div className="w-10 h-10 bg-gray-200 rounded-full flex-shrink-0 flex items-center justify-center">
+            <User className="w-5 h-5 text-gray-600" />
+          </div>
+          <div className="flex-grow">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="font-semibold">{comment.user_name}</p>
+                <p className="text-xs text-gray-500">
+                  {formatTimeAgo(comment.created_at)}
+                </p>
+              </div>
+              {showDelete && (
+                <button
+                  onClick={() => handleCommentDelete(comment.id)}
+                  title="Delete comment"
+                  className="text-gray-400 hover:text-red-600 transition-colors"
+                >
+                  <Trash2 className="w-4 h-4" />
+                </button>
+              )}
+            </div>
+            <p className="text-gray-700 mt-1 whitespace-pre-wrap">
+              {comment.content}
+            </p>
+          </div>
         </div>
+      );
+    })
+  ) : (
+    <p className="text-gray-600">
+      No comments yet. Be the first to comment!
+    </p>
+  )}
+</div>
+
       </div>
 
       <footer className="mt-12 pt-8 border-t border-gray-200">
