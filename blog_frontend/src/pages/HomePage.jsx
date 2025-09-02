@@ -519,7 +519,7 @@ return (
     {/* Footer */}
     <footer className="bg-gray-100 text-center py-4 mt-8 border-t">
       <p className="text-gray-600 text-sm">
-        © {new Date().getFullYear()} SkillSwap. All rights reserved.
+        © {new Date().getFullYear()} blogHub. All rights reserved.
       </p>
     </footer>
   </div>
