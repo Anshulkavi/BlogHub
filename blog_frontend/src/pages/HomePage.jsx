@@ -467,8 +467,10 @@ setPopularTags(tagsData.map(tag => tag.name));
     setSelectedCategory('');
   };
 
-  return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+return (
+  <div className="flex flex-col min-h-screen">
+    {/* Page Content */}
+    <div className="flex-grow max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <PostFilters
         searchTerm={searchTerm}
         setSearchTerm={setSearchTerm}
@@ -487,15 +489,13 @@ setPopularTags(tagsData.map(tag => tag.name));
         popularTags={popularTags}
         onSearch={() => {}}
       />
-      
+
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {loading ? (
-          // If loading, show a grid of 6 skeletons
           Array.from({ length: 6 }).map((_, index) => (
             <PostCardSkeleton key={index} />
           ))
         ) : posts.length > 0 ? (
-          // If not loading and have posts, show the real posts
           posts.map((post) => (
             <PostCard
               key={post.id}
@@ -506,7 +506,6 @@ setPopularTags(tagsData.map(tag => tag.name));
             />
           ))
         ) : (
-          // If not loading and no posts, show the 'not found' message
           <div className="text-center py-12 md:col-span-3">
             <h3 className="text-xl font-medium text-gray-700">No posts found</h3>
             <p className="text-gray-500 mt-2">
@@ -516,7 +515,16 @@ setPopularTags(tagsData.map(tag => tag.name));
         )}
       </div>
     </div>
-  );
+
+    {/* Footer */}
+    <footer className="bg-gray-100 text-center py-4 mt-8 border-t">
+      <p className="text-gray-600 text-sm">
+        © {new Date().getFullYear()} SkillSwap. All rights reserved.
+      </p>
+    </footer>
+  </div>
+);
+
 };
 
 export default HomePage;
