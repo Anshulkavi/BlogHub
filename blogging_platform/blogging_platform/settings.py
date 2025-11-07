@@ -45,17 +45,18 @@ INSTALLED_APPS = [
 # Middleware
 # =========================
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    # Place WhiteNoise right after SecurityMiddleware
-    'whitenoise.middleware.WhiteNoiseMiddleware',
-    # Place CorsMiddleware right after WhiteNoise
-    'corsheaders.middleware.CorsMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "django.middleware.security.SecurityMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
+
+    # ✅ CORS Middleware should come before CommonMiddleware
+    "corsheaders.middleware.CorsMiddleware",
+
+    "django.middleware.common.CommonMiddleware",
+    "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.csrf.CsrfViewMiddleware",
+    "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "django.contrib.messages.middleware.MessageMiddleware",
+    "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
 
 ROOT_URLCONF = 'blogging_platform.urls'
@@ -170,49 +171,32 @@ SIMPLE_JWT = {
 }
 
 # =========================
-# CORS & CSRF
+# ✅ CORS CONFIG (Fix for Local + Render)
 # =========================
-# Read the frontend URL from an environment variable
-FRONTEND_URL = config('FRONTEND_URL', default='http://localhost:5173')
-
 CORS_ALLOWED_ORIGINS = [
-    FRONTEND_URL,
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
+    "https://your-frontend.onrender.com",  # optional for deployment
 ]
-# It's also good practice to add your frontend to CSRF_TRUSTED_ORIGINS
+
+CORS_ALLOW_CREDENTIALS = True  # allows cookies/JWTs over CORS
+
+CORS_ALLOW_HEADERS = [
+    "accept",
+    "accept-encoding",
+    "authorization",
+    "content-type",
+    "dnt",
+    "origin",
+    "user-agent",
+    "x-csrftoken",
+    "x-requested-with",
+]
+
 CSRF_TRUSTED_ORIGINS = [
-    FRONTEND_URL,
-    # Also add your backend's URL here once it's deployed
-    # e.g., 'https://your-backend-name.onrender.com'
+    "http://127.0.0.1:5173",
+    "http://localhost:5173",
+    "https://your-backend.onrender.com",  # add this once deployed
 ]
-# =========================
-# Logging
-# =========================
-# LOGGING = {
-#     'version': 1,
-#     'disable_existing_loggers': False,
-#     'formatters': {
-#         'verbose': {
-#             'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
-#             'style': '{',
-#         },
-#     },
-#     'handlers': {
-#         'console': {
-#             'class': 'logging.StreamHandler',
-#             'formatter': 'verbose',
-#         },
-#     },
-#     'root': {
-#         'handlers': ['console'],
-#         'level': 'INFO',
-#     },
-#     'loggers': {
-#         'django.db.backends': {
-#             'handlers': ['console'],
-#             'level': 'DEBUG',
-#             'propagate': False,
-#         },
-#     },
-# }
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
