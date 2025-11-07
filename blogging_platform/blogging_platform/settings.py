@@ -171,15 +171,16 @@ SIMPLE_JWT = {
 }
 
 # =========================
-# ✅ CORS CONFIG (Fix for Local + Render)
+# ✅ CORS CONFIG (for Render deployment)
 # =========================
+
 CORS_ALLOWED_ORIGINS = [
+    "https://bloghub-a851.onrender.com",         # ✅ Your frontend on Render
+    "http://localhost:5173",                     # For local dev
     "http://127.0.0.1:5173",
-    "http://localhost:5173",
-    "https://your-frontend.onrender.com",  # optional for deployment
 ]
 
-CORS_ALLOW_CREDENTIALS = True  # allows cookies/JWTs over CORS
+CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOW_HEADERS = [
     "accept",
@@ -194,9 +195,9 @@ CORS_ALLOW_HEADERS = [
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    "http://127.0.0.1:5173",
+    "https://bloghub-a851.onrender.com",         # ✅ Frontend
+    "https://bloghub-backend-ua2s.onrender.com", # ✅ Backend
     "http://localhost:5173",
-    "https://your-backend.onrender.com",  # add this once deployed
 ]
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
